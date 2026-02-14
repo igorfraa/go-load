@@ -371,18 +371,6 @@ func darwinFreeMem() uint64 {
 	return free
 }
 
-func darwinFreeMemFallback() uint64 {
-	val, err := syscall.Sysctl("hw.memsize")
-	if err != nil || len(val) < 8 {
-		return 8 << 30
-	}
-	var total uint64
-	for i := 0; i < 8 && i < len(val); i++ {
-		total |= uint64(val[i]) << (i * 8)
-	}
-	return total / 2 // rough estimate
-}
-
 func linuxFreeMem() uint64 {
 	data, err := os.ReadFile("/proc/meminfo")
 	if err != nil {
